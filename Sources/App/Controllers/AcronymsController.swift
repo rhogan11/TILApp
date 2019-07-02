@@ -13,6 +13,9 @@ struct AcronymsController: RouteCollection {
         acronymsRoutes.delete(Acronym.parameter, use: self.deleteHandler)
         acronymsRoutes.put(Acronym.parameter, use: self.updateHandler)
         acronymsRoutes.get(Acronym.parameter, "user", use: self.getUserHandler)
+        acronymsRoutes.post(Acronym.parameter, "categories", Category.parameter, use: self.addCategoriesHandler)
+        acronymsRoutes.get(Acronym.parameter, "categories", use: self.getCategoriesHandler)
+        acronymsRoutes.delete(Acronym.parameter, "categories", Category.parameter, use: self.removeCategoriesHandler)
     }
     
     private func getAllHandler(_ request: Request) -> Future<[Acronym]> {
@@ -69,6 +72,33 @@ struct AcronymsController: RouteCollection {
     private func getUserHandler(_ request: Request) throws -> Future<User> {
         return try request.parameters.next(Acronym.self).flatMap(to: User.self) { acronym in
             return acronym.user.get(on: request)
+        }
+    }
+    
+    private func addCategoriesHandler(_ request: Request) throws -> Future<HTTPStatus> {
+        return try flatMap(
+            to: HTTPStatus.self,
+            request.parameters.next(Acronym.self),
+            request.parameters.next(Category.self)) { acronym, category in
+                return acronym.categories
+                    .attach(category, on: request)
+                    .transform(to: .created)
+        }
+    }
+    
+    private func getCategoriesHandler(_ request: Request) throws -> Future<[Category]> {
+        return try request.parameters.next(Acronym.self).flatMap(to: [Category].self) { acronym in
+            return try acronym.categories.query(on: request).all()
+        }
+    }
+    
+    private func removeCategoriesHandler(_ request: Request) throws -> Future<HTTPStatus> {
+        return flatMap(
+            to: HTTPStatus.self,
+            try request.parameters.next(Acronym.self),
+            try request.parameters.next(Category.self)
+        ) { acronym, category in
+            return acronym.categories.detach(category, on: request).transform(to: .noContent)
         }
     }
 }
