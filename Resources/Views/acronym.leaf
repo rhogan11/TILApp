@@ -5,7 +5,7 @@
     #// 4
     <h2>#(acronym.long)</h2>
     #// 5
-    <p>Created by #(user.name)</p>
+    <p>Created by <a href="/users/#(user.id)/">#(user.name)</a></p>
 </body>
 }
 

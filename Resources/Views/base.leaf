@@ -21,7 +21,11 @@
                 <ul class="navbar-nav mr-auto">
                     <li class="nav-item #if(title == "Home page"){active}">
                         <a href="/" class="nav-link">Home</a>
-                    </li> </ul>
+                    </li>
+                    <li class="nav-item #if(title == "All Users"){active}">
+                        <a href="/users" class="nav-link">All Users</a>
+                    </li>
+                </ul>
             </div>
         </nav>
         <div class="container mt-3">

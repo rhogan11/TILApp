@@ -1,4 +1,5 @@
 #set("content") {
+<img src="/images/logo.png" class="mx-auto d-block" alt="TIL Logo" />
 <h1>Acronyms</h1>
 #if(acronyms) {
 <table class="table table-bordered table-hover">
